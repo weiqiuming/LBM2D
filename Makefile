@@ -2,9 +2,9 @@ CC = /usr/bin/g++
 
 SRCS = $(wildcard *.cpp */*.cpp)
 OBJS = $(patsubst %cpp, %o, $(SRCS))
-INCLUDE = -I /home/loongson/OpenGL -I /home/loongson/OpenGL/glfw/include -I /home/loongson/OpenGL/stb_image
+INCLUDE = -I ./ -I ./glfw/include -I ./stb_image
 
-LIB = -L /home/loongson/OpenGL/glfw/lib64 -L /home/loongson/OpenGL/glad/lib/  -lglad -lGL -lglfw3 -lpthread -lXrandr -lXi  -lX11  -ldl
+LIB = -L ./glfw/lib64 -L ./glad/lib/  -lglad -lGL -lglfw3 -lpthread -lXrandr -lXi  -lX11  -ldl
 
 TARGET = main
 
