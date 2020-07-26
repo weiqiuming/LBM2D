@@ -39,7 +39,7 @@ float lastFrame = 0.0f;
 int main()
 {
 
-	LBM lbmFluid(10,10);	
+	LBM lbmFluid(100,10);	
 	// glfw: initialize and configure
     // ------------------------------
     glfwInit();
