@@ -1,4 +1,4 @@
-##
+##master
 CC = /usr/bin/g++
 
 SRCS = $(wildcard *.cpp */*.cpp)
