@@ -39,7 +39,6 @@ float lastFrame = 0.0f;
 int main()
 {
 
-	LBM lbmFluid(100,10);	
 	// glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -145,6 +144,7 @@ int main()
 
 //	GLubyte planeIndex[]={0,1,2,0,2,3};
 
+	LBM lbmFluid(100,10);	
     // cube VAO
     unsigned int cubeVAO, cubeVBO;
     glGenVertexArrays(1, &cubeVAO);

@@ -271,7 +271,7 @@ uint* LBM::getIndexData()
 	{
 		while(i<width)
 		{
-			uint index = i - 1 + (j-1) * width;
+			uint index = i - 1 + (j-1) * (width-1);
 			indexData[index*6] = i+j*width;
 			indexData[index*6+1] = i-1 + j*width;
 			indexData[index*6+2] = i-1 + (j-1)*width;
