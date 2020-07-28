@@ -27,7 +27,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 // camera
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 0.0f));
 float lastX = (float)SCR_WIDTH  / 2.0;
 float lastY = (float)SCR_HEIGHT / 2.0;
 bool firstMouse = true;
@@ -144,7 +144,6 @@ int main()
 
 //	GLubyte planeIndex[]={0,1,2,0,2,3};
 
-	LBM lbmFluid(100,10);	
     // cube VAO
     unsigned int cubeVAO, cubeVBO;
     glGenVertexArrays(1, &cubeVAO);
@@ -159,6 +158,7 @@ int main()
     glBindVertexArray(0);
 
 
+	LBM lbmFluid(40,40);	
     // mesh VAO
 	vec3* fluidData = lbmFluid.getVertexData();
     unsigned int planeVAO, planeVBO;
@@ -233,7 +233,14 @@ int main()
         model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
         shader.setMat4("model", model);
       //  glDrawArrays(GL_TRIANGLES, 0, 36);
+	  
+
         // floor
+		glBufferData(GL_ARRAY_BUFFER,sizeof(vec3)*lbmFluid.width*lbmFluid.height,fluidData, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glBindVertexArray(0);
+
         glBindVertexArray(planeVAO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,planeIBO);
         shader.setMat4("model", glm::mat4(1.0f));
@@ -277,6 +284,8 @@ void processInput(GLFWwindow *window)
         camera.ProcessKeyboard(UP, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
         camera.ProcessKeyboard(DOWN, deltaTime);
+
+	cout<<camera.Front.x<<" "<<camera.Front.y<<" "<<camera.Front.z<<endl;
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes

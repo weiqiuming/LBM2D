@@ -7,7 +7,7 @@
 #define SOURCE 1<<2
 #define FLUID 1<<3
 
-#define OMEGA 1.8f
+#define OMEGA 1.0f
 using namespace std;
 
 void stream(LBM::lbm_node* input,LBM::lbm_node* output,LBM::d3q9_node* d3q9,uint width,uint height);
@@ -62,11 +62,19 @@ vec3* LBM::getVertexData()
 			offset = i + j * width;
 			if(LBMData[offset].type&(FLUID|SOURCE))
 			{
-				vertexData[offset] = vec3(i,LBMData[offset].rho-1.0f,j);
+				uint fluidHeight = LBMData[offset].rho -0.0f;
+			//	fluidHeight = fluidHeight*fluidHeight*fluidHeight;
+			//	fluidHeight = fluidHeight*3;
+				vertexData[offset] = vec3(i,fluidHeight,j);
+				if(LBMData[offset].rho<0.0f)
+				{
+					cout<<"rho erro"<<endl;
+					return 0;
+				}
 			}
 			else
 			{
-				vertexData[offset] = vec3(i,0,j);
+				vertexData[offset] = vec3(i,1,j);
 			}
 			i++;
 		}
@@ -97,8 +105,9 @@ void init(LBM::lbm_node* data1,LBM::lbm_node* data2,LBM::d3q9_node* d3q9,uint wi
 		while(i<width)
 		{
 			uint offset = i + j *width;
-			bool isBoundary = (i==0)||(j==0)||(i==width-1)||(j==height-1);
-			bool isSource = ((i-width/2)*(i-width/2)+(j-height/2)*(j-height/2))<30;
+			bool isBoundary = (j==0)||(i==width-1)||(j==height-1);
+		//	bool isSource = ((i-width/2)*(i-width/2)+(j-height/2)*(j-height/2))<30;
+			bool isSource = i==0;
 			bool isSolid = false;
 			if(isBoundary||isSolid)
 			{	
@@ -179,7 +188,6 @@ void stream(LBM::lbm_node* input,LBM::lbm_node* output,LBM::d3q9_node* d3q9,uint
 					if(input[tempOffset].type&(SOLID|BOUNDARY))
 					{
 						output[offset].f[d3q9[dir].op]= input[offset].f[dir];
-						output[offset].f[d3q9[dir].op]= input[offset].f[dir];
 
 					}
 					else if(input[tempOffset].type&SOURCE)
@@ -197,7 +205,6 @@ void stream(LBM::lbm_node* input,LBM::lbm_node* output,LBM::d3q9_node* d3q9,uint
 					dir++;
 				}
 
-				output[offset].rho = rho;
 				if(rho>0)
 				{
 					u.x = u.x /rho;
@@ -206,8 +213,10 @@ void stream(LBM::lbm_node* input,LBM::lbm_node* output,LBM::d3q9_node* d3q9,uint
 				else
 				{
 					u = vec2(0,0);
+					rho =0.0f;
 				}
 				output[offset].u =u;
+				output[offset].rho = rho;
 			}
 			else
 			{
@@ -243,8 +252,8 @@ void collide(LBM::lbm_node* input,LBM::lbm_node* output,LBM::d3q9_node* d3q9,uin
 			}
 			else if(input[offset].type&SOURCE)
 			{
-				output[offset].rho = 2.0f;
-				output[offset].u = vec2(0,0);
+				output[offset].rho = 1.0f;
+				output[offset].u = vec2(0.05f,0);
 
 				uint dir =0;
 				while(dir<9)
